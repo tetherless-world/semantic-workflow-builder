@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<!-- saved from url=(0062)https://blockly-demo.appspot.com/static/demos/fixed/index.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>Semantic Workflow Builder (v.0.9)</title>
+  <script src="./Semantic_Workflow_Builder/blockly_compressed.js"></script>
+  <script src="./Semantic_Workflow_Builder/blocks_compressed.js"></script>
+  <script src="./Semantic_Workflow_Builder/en.js"></script>
+  <script src="./Semantic_Workflow_Builder/javascript_compressed.js"></script>
+  <script src="./Semantic_Workflow_Builder/json_converter.js"></script>
+    
+  <h1><font face="verdana">Semantic Workflow Builder (v.0.9)</font></h1>
+<p>Click 'Blocks' to add <a href="http://vcvcomputing.com/provone/provone.html">ProvONE</a> structures; start with a 'Workflow' block. Click 'Variables' to add variables. Don't forget to save the JSON-LD you generate!</p>    
+<div style="height: 600px">
+    <div id="blocklyDiv" style="float: left; width: 49%; height: 100%"></div>
+
+    <xml id="toolbox" style="display: none">
+    <category name="Blocks">
+        <block type="workflow"></block>
+        <block type="plan"></block>
+        <block type="program"></block>
+        <block type="visualization"></block>
+        <block type="data"></block>
+    </category>
+    <category name="Variables">
+        <block type="string"></block>
+        <block type="uri"></block>
+        <block type="number"></block>
+        <block type="text"></block>
+    </category>
+  </xml>
+    <div style="margin-left: 50%; width: 49%; height: 98%">
+        <p2><b><font size="1"><font face="verdana">JSON INTERPRETER</font></font></b></p2>
+        <textarea id=json_area style="height: 95%; width: 100%; border:1px solid #000000;"></textarea>
+    </div>
+  </div>
+    </html>
+<body>
+ 
+<table>
+    <tr>
+        <td>Save As (Filename):</td>
+        <td><input id="inputFileNameToSaveAs";
+<textarea name="myTextBox"" style="border:1px solid #000000;">
+</textarea>
+<br />
+</input></td>
+        <td><button onclick="saveTextAsFile()">Save to File</button></td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+ 
+function saveTextAsFile()
+{
+    var textToSave = Blockly.JavaScript.workspaceToCode(workspace);
+    var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
+    var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+    var fileNameToSaveAs = document.getElementById("inputFileNameToSaveAs").value + '.json';
+    if (fileNameToSaveAs == '.json')
+    {
+        fileNameToSaveAs = 'Workflow.json';
+    }
+ 
+    var downloadLink = document.createElement("a");
+    downloadLink.download = fileNameToSaveAs;
+    downloadLink.innerHTML = "Download File";
+    downloadLink.href = textToSaveAsURL;
+    downloadLink.onclick = destroyClickedElement;
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+ 
+    downloadLink.click();
+}
+ 
+function destroyClickedElement(event)
+{
+    document.body.removeChild(event.target);
+}
+ 
+</script>
+
+  <script>
+    var workspace = Blockly.inject('blocklyDiv',
+        {toolbox: document.getElementById('toolbox')});
+      
+    Blockly.Blocks['workflow'] = {
+  init: function() {
+    this.appendDummyInput()
+        .setAlign(Blockly.ALIGN_CENTRE)
+        .appendField("Workflow");
+    this.appendValueInput("label")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("label");
+    this.appendValueInput("altLabel")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("altLabel");
+    this.appendStatementInput("hadPlan")
+        .setCheck("Plan")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("hadPlan");
+    this.appendStatementInput("hasSubProgram")
+        .setCheck("Program")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("hasSubProgram");
+    this.setColour(20);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};    
+      
+    Blockly.Blocks['plan'] = {
+  init: function() {
+    this.appendDummyInput()
+        .setAlign(Blockly.ALIGN_CENTRE)
+        .appendField("Plan");
+    this.appendValueInput("label")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("label");
+    this.appendValueInput("altLabel")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("altLabel");
+    this.appendValueInput("hasCode")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("hasCode");
+    this.appendValueInput("seeAlso")
+        .setCheck(["URI"])
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("seeAlso");
+    this.setPreviousStatement(true, "Plan");
+    this.setNextStatement(true, null);
+    this.setColour(330);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+    // this.planBlocks--;
+ }
+};
+    
+      Blockly.Blocks['program'] = {
+  init: function() {
+    this.appendDummyInput()
+        .setAlign(Blockly.ALIGN_CENTRE)
+        .appendField("Program");
+    this.appendValueInput("label")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("label");
+    this.appendValueInput("altLabel")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("altLabel");
+    this.appendValueInput("comment")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("comment");
+    this.appendValueInput("conformsTo")
+        .setCheck(["URI", "String"])
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("conformsTo");
+    this.appendStatementInput("hasInData")
+        .setCheck("Data")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("hasInData");
+    this.appendValueInput("hasOutData")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("hasOutData");
+    this.appendStatementInput("hasSubProgram")
+        .setCheck("Program")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("hasSubProgram");
+    this.appendStatementInput("hasVisualization")
+        .setCheck("Visualization")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("hasVisualization");
+    this.setPreviousStatement(true, "Program");
+    this.setNextStatement(true, null);
+    this.setColour(120);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+      
+    Blockly.Blocks['visualization'] = {
+  init: function() {
+    this.appendDummyInput()
+        .setAlign(Blockly.ALIGN_CENTRE)
+        .appendField("Visualization");
+    this.appendValueInput("label")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("label");
+    this.appendValueInput("altLabel")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("altLabel");
+    this.appendValueInput("comment")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("comment");
+    this.appendValueInput("conformsTo")
+        .setCheck(["URI", "String"])
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("conformsTo");
+    this.appendValueInput("hasCode")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("hasCode");
+    this.appendStatementInput("hasInData")
+        .setCheck("Data")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("hasInData");
+    this.setPreviousStatement(true, "Visualization");
+    this.setNextStatement(true, null);
+    this.setColour(65);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+    
+    Blockly.Blocks['data'] = {
+  init: function() {
+    this.appendDummyInput()
+        .setAlign(Blockly.ALIGN_CENTRE)
+        .appendField("Data");
+    this.appendValueInput("label")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("label");
+    this.appendValueInput("comment")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("comment");
+    this.appendValueInput("hasCode")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("hasCode");
+    this.setPreviousStatement(true, "Data");
+    this.setNextStatement(true, null);
+    this.setColour(20);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Blocks['string'] = {
+  init: function() {
+    this.jsonInit({"output": "String"});
+    this.appendDummyInput()
+        .appendField("String:")
+        .appendField(new Blockly.FieldTextInput(''),
+                     'FIELDNAME');
+    this.stringCount = 0;
+    this.setMutator(new Blockly.Mutator(['string_options']));
+    this.setColour(230);
+    this.setTooltip('String mutator.');
+    this.setHelpUrl('https://www.example.com');
+    },
+    mutationToDom: function(workspace) {
+      var container = document.createElement('mutation');
+      container.setAttribute('strings', this.stringCount);
+      return container;
+    },
+    domToMutation: function(container) {
+        this.stringCount_ = parseInt(container.getAttribute('strings'), 10);
+        this.updateShape_();
+    },
+    decompose: function(workspace) {
+        // Populate the mutator's dialog with this block's components.
+        var containerBlock = workspace.newBlock('string_container');
+        containerBlock.initSvg();
+        var connection = containerBlock.getInput('STACK').connection;
+        for (var i = 0; i < this.stringCount_; i++) {
+          var stringBlock = workspace.newBlock('string_options');
+          stringBlock.initSvg();
+          connection.connect(stringBlock.previousConnection);
+          connection = stringBlock.nextConnection;
+        }
+        return containerBlock;
+    },
+    compose: function(containerBlock) {
+    // Reconfigure this block based on the mutator dialog's components.
+    var stringBlock = containerBlock.getInputTargetBlock('STACK');
+    // Count number of inputs.
+    var data = [];
+    while (stringBlock) {
+      data.push([stringBlock.userData_, stringBlock.cpuData_]);
+      stringBlock = stringBlock.nextConnection &&
+          stringBlock.nextConnection.targetBlock();
+    }
+    this.stringCount_ = data.length;
+    this.updateShape_();
+    // Restore any data.
+    for (var i = 0; i < this.optionCount_; i++) {
+      this.setFieldValue(data[i][0] || 'string', 'USER' + i);
+      this.setFieldValue(data[i][1] || 'STRINGNAME', 'CPU' + i);
+    }
+  },
+    saveConnections: function(containerBlock) {
+    // Store names and values for each string.
+        var stringBlock = containerBlock.getInputTargetBlock('STACK');
+        var i = 0;
+        while (stringBlock) {
+          stringBlock.userData_ = this.getFieldValue('USER' + i);
+          i++;
+          stringBlock = stringBlock.nextConnection &&
+              stringBlock.nextConnection.targetBlock();
+    }
+  },
+    updateShape_: function() {
+    // Modify this block to have the correct number of Strings.
+    // Add new String.
+    for (var i = 0; i < this.stringCount_; i++) {
+      if (!this.getInput('string' + i)) {
+        this.appendDummyInput('string' + i)
+            .appendField("String:")
+            .appendField(new Blockly.FieldTextInput(''), 'USER' + i)
+            .setAlign(Blockly.ALIGN_RIGHT)
+      }
+    }
+    // Remove deleted Strings.
+    while (this.getInput('string' + i)) {
+      this.removeInput('string' + i);
+      i++;
+    }
+  }
+};
+      
+Blockly.Blocks['string_container'] = {
+  // Container.
+  init: function() {
+    this.setColour(230);
+    this.appendDummyInput()
+        .appendField('Add Strings');
+    this.appendStatementInput('STACK');
+    this.setTooltip('Add, remove, or reorder Strings\n' +
+                    'to reconfigure this String menu.');
+    this.setHelpUrl('https://www.example.com');
+    this.contextMenu = false;
+  }
+};
+
+Blockly.Blocks['string_options'] = {
+  // Add String.
+  init: function() {
+    this.setColour(230);
+    this.appendDummyInput()
+        .appendField('String');
+    this.setPreviousStatement('String');
+    this.setNextStatement(true);
+    this.setTooltip('Add a new String to the String container.');
+    this.setHelpUrl('https://www.example.com');
+    this.contextMenu = false;
+  }
+};
+
+Blockly.Blocks['uri'] = {
+  init: function() {
+    this.jsonInit({"output": "URI"});
+    this.appendDummyInput()
+        .appendField("URI:")
+        .appendField(new Blockly.FieldTextInput(''),
+                     'FIELDNAME');
+    this.uriCount = 0;
+    this.setMutator(new Blockly.Mutator(['uri_options']));
+    this.setColour(260);
+    this.setTooltip('URI mutator.');
+    this.setHelpUrl('https://www.example.com');
+    },
+    mutationToDom: function(workspace) {
+      var container = document.createElement('mutation');
+      container.setAttribute('uris', this.uriCount);
+      return container;
+    },
+    domToMutation: function(container) {
+        this.uriCount_ = parseInt(container.getAttribute('uris'), 10);
+        this.updateShape_();
+    },
+    decompose: function(workspace) {
+        // Populate the mutator's dialog with this block's components.
+        var containerBlock = workspace.newBlock('uri_container');
+        containerBlock.initSvg();
+        var connection = containerBlock.getInput('STACK').connection;
+        for (var i = 0; i < this.uriCount_; i++) {
+          var uriBlock = workspace.newBlock('uri_options');
+          uriBlock.initSvg();
+          connection.connect(uriBlock.previousConnection);
+          connection = uriBlock.nextConnection;
+    }
+    return containerBlock;
+    },
+    compose: function(containerBlock) {
+    // Reconfigure this block based on the mutator dialog's components.
+    var uriBlock = containerBlock.getInputTargetBlock('STACK');
+    // Count number of inputs.
+    var data = [];
+    while (uriBlock) {
+      data.push([uriBlock.userData_, uriBlock.cpuData_]);
+      uriBlock = uriBlock.nextConnection &&
+          uriBlock.nextConnection.targetBlock();
+    }
+    this.uriCount_ = data.length;
+    this.updateShape_();
+    // Restore any data.
+    for (var i = 0; i < this.optionCount_; i++) {
+      this.setFieldValue(data[i][0] || 'uri', 'USER' + i);
+      this.setFieldValue(data[i][1] || 'URINAME', 'CPU' + i);
+    }
+  },
+    saveConnections: function(containerBlock) {
+    // Store names and values for each URI.
+        var uriBlock = containerBlock.getInputTargetBlock('STACK');
+        var i = 0;
+        while (uriBlock) {
+          uriBlock.userData_ = this.getFieldValue('USER' + i);
+          i++;
+          uriBlock = uriBlock.nextConnection &&
+              uriBlock.nextConnection.targetBlock();
+    }
+  },
+    updateShape_: function() {
+    // Modify this block to have the correct number of URIs.
+    // Add new URI.
+    for (var i = 0; i < this.uriCount_; i++) {
+      if (!this.getInput('uri' + i)) {
+        this.appendDummyInput('uri' + i)
+            .appendField("URI:")
+            .appendField(new Blockly.FieldTextInput(''), 'USER' + i)
+            .setAlign(Blockly.ALIGN_RIGHT)
+      }
+    }
+    // Remove deleted URIs.
+    while (this.getInput('uri' + i)) {
+      this.removeInput('uri' + i);
+      i++;
+    }
+  }
+};
+      
+Blockly.Blocks['uri_container'] = {
+  // Container.
+  init: function() {
+    this.setColour(230);
+    this.appendDummyInput()
+        .appendField('Add URIs');
+    this.appendStatementInput('STACK');
+    this.setTooltip('Add, remove, or reorder URIs\n' +
+                    'to reconfigure this URI menu.');
+    this.setHelpUrl('https://www.example.com');
+    this.contextMenu = false;
+  }
+};
+
+Blockly.Blocks['uri_options'] = {
+  // Add URI.
+  init: function() {
+    this.setColour(230);
+    this.appendDummyInput()
+        .appendField('URI');
+    this.setPreviousStatement('URI');
+    this.setNextStatement(true);
+    this.setTooltip('Add a new URI to the URI container.');
+    this.setHelpUrl('https://www.example.com');
+    this.contextMenu = false;
+  }
+};
+
+Blockly.Blocks['number'] = {
+  init: function() {
+    this.jsonInit({"output": "Number"});
+    this.appendDummyInput()
+        .appendField("Number:")
+        .appendField(new Blockly.FieldTextInput(''),
+                     'FIELDNAME');
+    this.numberCount = 0;
+    this.setMutator(new Blockly.Mutator(['number_options']));
+    this.setColour(290);
+    this.setTooltip('Number mutator.');
+    this.setHelpUrl('https://www.example.com');
+    },
+    mutationToDom: function(workspace) {
+      var container = document.createElement('mutation');
+      container.setAttribute('numbers', this.numberCount);
+      return container;
+    },
+    domToMutation: function(container) {
+        this.numberCount_ = parseInt(container.getAttribute('numbers'), 10);
+        this.updateShape_();
+    },
+    decompose: function(workspace) {
+        // Populate the mutator's dialog with this block's components.
+        var containerBlock = workspace.newBlock('number_container');
+        containerBlock.initSvg();
+        var connection = containerBlock.getInput('STACK').connection;
+        for (var i = 0; i < this.numberCount_; i++) {
+          var numberBlock = workspace.newBlock('number_options');
+          numberBlock.initSvg();
+          connection.connect(numberBlock.previousConnection);
+          connection = numberBlock.nextConnection;
+    }
+    return containerBlock;
+    },
+    compose: function(containerBlock) {
+    // Reconfigure this block based on the mutator dialog's components.
+    var numberBlock = containerBlock.getInputTargetBlock('STACK');
+    // Count number of inputs.
+    var data = [];
+    while (numberBlock) {
+      data.push([numberBlock.userData_, numberBlock.cpuData_]);
+      numberBlock = numberBlock.nextConnection &&
+          numberBlock.nextConnection.targetBlock();
+    }
+    this.numberCount_ = data.length;
+    this.updateShape_();
+    // Restore any data.
+    for (var i = 0; i < this.optionCount_; i++) {
+      this.setFieldValue(data[i][0] || 'number', 'USER' + i);
+      this.setFieldValue(data[i][1] || 'NUMBERNAME', 'CPU' + i);
+    }
+  },
+    saveConnections: function(containerBlock) {
+    // Store names and values for each number.
+        var numberBlock = containerBlock.getInputTargetBlock('STACK');
+        var i = 0;
+        while (numberBlock) {
+          numberBlock.userData_ = this.getFieldValue('USER' + i);
+          i++;
+          numberBlock = numberBlock.nextConnection &&
+              numberBlock.nextConnection.targetBlock();
+    }
+  },
+    updateShape_: function() {
+    // Modify this block to have the correct number of Numbers.
+    // Add new Number.
+    for (var i = 0; i < this.numberCount_; i++) {
+      if (!this.getInput('number' + i)) {
+        this.appendDummyInput('number' + i)
+            .appendField("Number:")
+            .appendField(new Blockly.FieldTextInput(''), 'USER' + i)
+            .setAlign(Blockly.ALIGN_RIGHT)
+      }
+    }
+    // Remove deleted Numbers.
+    while (this.getInput('number' + i)) {
+      this.removeInput('number' + i);
+      i++;
+    }
+  }
+};
+      
+Blockly.Blocks['number_container'] = {
+  // Container.
+  init: function() {
+    this.setColour(230);
+    this.appendDummyInput()
+        .appendField('Add Number');
+    this.appendStatementInput('STACK');
+    this.setTooltip('Add, remove, or reorder Numbers\n' +
+                    'to reconfigure this Number menu.');
+    this.setHelpUrl('https://www.example.com');
+    this.contextMenu = false;
+  }
+};
+
+Blockly.Blocks['number_options'] = {
+  // Add Number.
+  init: function() {
+    this.setColour(230);
+    this.appendDummyInput()
+        .appendField('Number');
+    this.setPreviousStatement('Number');
+    this.setNextStatement(true);
+    this.setTooltip('Add a new Number to the Number container.');
+    this.setHelpUrl('https://www.example.com');
+    this.contextMenu = false;
+  }
+};
+
+function myUpdateFunction(event) {
+  var code = Blockly.JavaScript.workspaceToCode(workspace);
+  document.getElementById('json_area').value = code;
+}
+workspace.addChangeListener(myUpdateFunction);
+      
+</script><div class="blocklyWidgetDiv"></div><div class="blocklyTooltipDiv"></div>
+
+<script>
+  var programList = {};
+  var dataList = {};
+  var visualizationList = {};
+ 
+  String.prototype.replaceAt=function(index, character) {
+    return this.substr(0, index) + character + this.substr(index+character.length);
+}
+    
+  Blockly.JavaScript['workflow'] = function(block) {
+  programList = {};
+  dataList = {};
+  visualizationList = {};
+      
+  var value_label = processList(block.getInputTargetBlock('label'));
+  var value_altlabel = processList(block.getInputTargetBlock('altLabel'));
+  var statements_hadplan = Blockly.JavaScript.statementToCode(block, 'hadPlan');
+  if (statements_hadplan != '')
+      statements_hadplan = JSON.parse(statements_hadplan);
+  var statements_hassubprogram = Blockly.JavaScript.statementToCode(block, 'hasSubProgram');
+  console.log(statements_hassubprogram);
+  if (statements_hassubprogram != '')
+      statements_hassubprogram = JSON.parse(statements_hassubprogram);
+  var code = '[';
+  var workflow =
+      {'@id':'http://cwf.tw.rpi.edu/data#' + lowerCase_(value_label),
+       '@type':['http://dataone.org/ns/provone#Workflow'],
+       'http://dataone.org/ns/provone#hasSubProgram':[{'@id':statements_hassubprogram['@id']}],
+       'http://www.w3.org/2000/01/rdf-schema#label':[{'@value':value_label}],
+       'http://www.w3.org/2004/02/skos/core#altLabel':[{'@value':value_altlabel}],
+       'http://www.w3.org/ns/prov#hadPlan':[{'@id':statements_hadplan['@id']}]};
+  code += JSON.stringify(workflow, null, 4) + ',\n';
+  code += JSON.stringify(statements_hadplan, null, 4) + ',\n';
+  for (var key in programList)
+    code += JSON.stringify(programList[key], null, 4) + ',\n';
+  for (var key in dataList)
+    code += JSON.stringify(dataList[key], null, 4) + ',\n';
+  for (var key in visualizationList)
+    code += JSON.stringify(visualizationList[key], null, 4) + ',\n';
+    code = code.replace(/"",/g, '');
+  if (code.charAt(code.length - 3) == ',')
+      code = code.replaceAt(code.length - 3, ' ');
+  if (code.charAt(code.length - 2) == ',')
+      code = code.replaceAt(code.length - 2, ' ');
+  code += ']';
+  return code;
+};
+    
+  Blockly.JavaScript['program'] = function(block) {
+  var value_type = 'program';
+  var value_label = processList(block.getInputTargetBlock('label'));
+  var value_altlabel = processList(block.getInputTargetBlock('conformsTo'));
+  var value_comment = processList(block.getInputTargetBlock('comment'));
+  var value_conformsto = processList(block.getInputTargetBlock('conformsTo'));
+  var statements_hasindata = Blockly.JavaScript.statementToCode(block, 'hasInData');
+  if (statements_hasindata != '')
+      statements_hasindata = JSON.parse(statements_hasindata);
+  var value_hasoutdata = processList(block.getInputTargetBlock('hasOutData'));
+  var statements_hassubprogram = Blockly.JavaScript.statementToCode(block, 'hasSubProgram');
+  if (statements_hassubprogram != '')
+      statements_hassubprogram = JSON.parse(statements_hassubprogram);
+  var statements_hasvisualization = Blockly.JavaScript.statementToCode(block, 'hasVisualization');
+  if (statements_hasvisualization != '')
+      statements_hasvisualization = JSON.parse(statements_hasvisualization);
+  var program =
+      {'@id':'http://cwf.tw.rpi.edu/data#' + lowerCase_(value_label),
+       '@type':['http://dataone.org/ns/provone#Program'],
+       'http://www.w3.org/2000/01/rdf-schema#label':[{'@value':value_label}],
+       'http://www.w3.org/2004/02/skos/core#altLabel':[{'@value':value_altlabel}],
+       'http://www.w3.org/2000/01/rdf-schema#comment':[{'@value':value_comment}],
+       'http://purl.org/dc/terms/conformsTo':[{'@id':'http://wiki.eigenvector.com/index.php?title=' + lowerCase_(value_conformsto)}],
+       'http://cwf.tw.rpi.edu/vocab#hasInData':[{'@id':statements_hasindata['@id']}],
+       'http://cwf.tw.rpi.edu/vocab#hasOutData':[{'@id':'http://cwf.tw.rpi.edu/data#' + lowerCase_(value_hasoutdata)}],
+       'http://dataone.org/ns/provone#hasSubProgram':[{'@id':statements_hassubprogram['@id']}],
+       'http://cwf.tw.rpi.edu/vocab#hasVisualization':[{'@id':statements_hasvisualization['@id']}]};
+  programList[value_label] = program;
+  code = JSON.stringify(program, null, 4);
+  return JSON.stringify(program, null, 4);
+};
+    
+  Blockly.JavaScript['data'] = function(block) {
+  var value_type = 'data';
+  var value_label = processList(block.getInputTargetBlock('label'));
+  var value_comment = processList(block.getInputTargetBlock('comment'));
+  var value_hascode = processList(block.getInputTargetBlock('hasCode'));
+  var data =
+      {'@id':'http://cwf.tw.rpi.edu/data#' + lowerCase_(value_label),
+       '@type':['http://dataone.org/ns/provone#Data'],
+       'http://www.w3.org/2000/01/rdf-schema#label':[{'@value':value_label}],
+       'http://www.w3.org/2000/01/rdf-schema#comment':[{'@value':value_comment}],
+       'http://cwf.tw.rpi.edu/vocab#hasCode':[{'@value':value_hascode}]};
+  dataList[value_label] = data;
+  code = JSON.stringify(data, null, 4);
+  return JSON.stringify(data, null, 4);
+};
+    
+  Blockly.JavaScript['plan'] = function(block) {
+  var value_type = 'plan';
+  var value_label = processList(block.getInputTargetBlock('label'));
+  var value_altlabel = processList(block.getInputTargetBlock('altLabel'));
+  var value_hascode = processList(block.getInputTargetBlock('hasCode'));
+  var value_seealso = processList(block.getInputTargetBlock('seeAlso'));
+  var plan = {'@id':'http://cwf.tw.rpi.edu/data#' + lowerCase_(value_label),
+             '@type':['http://dataone.org/ns/prov#Plan'],
+             'http://www.w3.org/2000/01/rdf-schema#label':[{'@value':value_label}],
+             'http://cwf.tw.rpi.edu/vocab#hasCode':[{'@value':value_hascode}],
+             'http://cwf.tw.rpi.edu/vocab#seeAlso':[{'@value':value_seealso}]};
+  return JSON.stringify(plan, null, 4);
+};
+    
+  Blockly.JavaScript['visualization'] = function(block) {
+  var value_type = 'visualization';
+  var value_label = processList(block.getInputTargetBlock('label'));
+  var value_altlabel = processList(block.getInputTargetBlock('altLabel'));
+  var value_comment = processList(block.getInputTargetBlock('comment'));
+  var value_conformsto = processList(block.getInputTargetBlock('conformsTo'));
+  var value_hascode = processList(block.getInputTargetBlock('hasCode'));
+  var statements_hasindata = Blockly.JavaScript.statementToCode(block, 'hasInData');
+  if (statements_hasindata != '')
+      statements_hasindata = JSON.parse(statements_hasindata);
+  var visualization =
+      {'@id':'http://cwf.tw.rpi.edu/data#' + lowerCase_(value_label),
+       '@type':['http://dataone.org/ns/provone#Visualization'],
+       'http://www.w3.org/2000/01/rdf-schema#label':[{'@value':value_label}],
+       'http://www.w3.org/2004/02/skos/core#altLabel':[{'@value':value_altlabel}],
+       'http://www.w3.org/2000/01/rdf-schema#comment':[{'@value':value_comment}],
+       'http://purl.org/dc/terms/conformsTo':[{'@id':'http://wiki.eigenvector.com/index.php?title=' + lowerCase_(value_conformsto)}],
+       'http://cwf.tw.rpi.edu/vocab#hasCode':[{'@value':value_hascode}],
+       'http://cwf.tw.rpi.edu/vocab#hasInData':[{'@id':statements_hasindata['@id']}]};
+  visualizationList[value_label] = visualization;
+  code = JSON.stringify(visualization, null, 4);
+  return JSON.stringify(visualization, null, 4);
+};
+
+function processList(block)
+{
+    var output = '';
+    
+    if (block){
+        for (var i = 0; i < block.inputList.length; i++)
+        {
+            output += block.inputList[i].fieldRow[1].text_;
+
+            if (i < block.inputList.length - 1)
+                output += ', ';
+        }
+    }
+    
+    return output;
+}
+
+function lowerCase_(string)
+{
+    var finalString = '';
+    string = string.toLowerCase();
+    
+    for (i = 0; i < string.length; i++)
+    {
+        if (string.charAt(i) == ' ')
+            finalString += '_';
+        else
+            finalString += string.charAt(i);
+    }
+    
+    return finalString;
+}
+
+// TODO: Prettify and remove slashes
+// TODO: Clean up the trash dump.
+// TODO: Test everything.
+    
+
+</script>   
+
+    </body></html>
+
